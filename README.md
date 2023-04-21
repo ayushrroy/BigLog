@@ -1,9 +1,121 @@
-# BigLog
-Framework/Tool that monitors server logs and identifies anomalous behavior .
+# Project Setup
 
-Authors: Sarthak Banerjee, Ajinkya Fotear, James Hinton, Vinayak Kumar, Sydney May, and Ayush Roy
-Version: v0 (4/11/2023)
+The sections that follow set up the dev environment for the project. These are for Mac but should roughly be the same for Windows (`WSL2`) and Linux.
 
-This repository contains most of the files from the CS 5614 Assignment 4. This includes docker compose files to run Jupyter Lab and Kafka workers among other local hosts within the Docker container. There are also folders with the data to be used by the kafka producer. producer.scala is a scala version of the producer.py file in the original reposititory for Assignment 4 (which is NOT included here). 
+## Requirements
 
-Note: Some of the files are erroneous and not related to this project, but were included to maintain the ability to run the Docker container and access the corresponding local hosts.
+1. Java 11
+2. Scala
+3. Apache Kafka (and Zookeeper)
+4. Apache Spark
+5. IntelliJ
+
+### Installing Java
+
+```bash
+❯ brew install openjdk@11
+```
+
+```bash
+❯ java -version
+openjdk version "11.0.11" 2021-04-20
+OpenJDK Runtime Environment AdoptOpenJDK-11.0.11+9 (build 11.0.11+9)
+OpenJDK 64-Bit Server VM AdoptOpenJDK-11.0.11+9 (build 11.0.11+9, mixed mode)
+```
+
+### Installing Scala
+
+```bash
+❯ brew install scala
+```
+
+```bash
+❯ scala -version
+Scala code runner version 3.2.2 -- Copyright 2002-2023, LAMP/EPFL
+```
+
+### Installing Spark
+
+```bash
+❯ brew install apache-spark
+```
+
+This will by default install Spark in `client` mode, instead of `cluster`, which is what we were using in `docker`.
+
+```bash
+❯ spark-shell
+Spark context Web UI available at http://10.0.0.113:4040
+Spark context available as 'sc' (master = local[*], app id = local-1682092096819).
+Spark session available as 'spark'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 3.3.2
+      /_/
+
+Using Scala version 2.12.15 (OpenJDK 64-Bit Server VM, Java 11.0.11)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala>
+```
+> __Note__: Homebrew takes care of putting the Spark binaries in your `PATH`. You will have to locate them on Windows and Linux before running the above command.
+
+### Installing Kafka
+
+```bash
+❯ brew install kafka
+```
+
+### Start Zookeeper
+
+```bash
+❯ zookeeper-server-start /usr/local/etc/zookeeper/zoo.cfg
+```
+> __Note__: Homebrew takes care of putting the Zookeeper binaries in your `PATH`. You will have to locate them on Windows and Linux before running the above command.
+
+### Start Kafka
+
+```bash
+❯ kafka-server-start /usr/local/etc/kafka/server.properties
+```
+> __Note__: Homebrew takes care of putting the Kafka binaries in your `PATH`. You will have to locate them on Windows and Linux before running the above command.
+
+### Create a Kafka topic
+
+```bash
+❯ kafka-topics --bootstrap-server localhost:9092 --topic test_topic
+WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
+Created topic test_topic.
+```
+
+### Start the Producer
+
+Make sure `access.log` is in your `PWD`.
+
+```bash
+❯ python3 producer.py
+```
+
+### Verifying logs on the Consumer
+
+```bash
+❯ kafka-console-consumer --from-beginning --bootstrap-server localhost:9092 --topic test_topic
+```
+
+### Creating an SBT project in IntelliJ
+
+1. Use the steps in [this link](https://docs.scala-lang.org/getting-started/intellij-track/building-a-scala-project-with-intellij-and-sbt.html) to create an SBT-based Scala project in IntelliJ. Feel free to use Maven instead if you are feeling adventurous.
+2. Once created, add the `libraryDependencies` from the `build.sbt` file in this branch to your project's `build.sbt`.
+3. Rename `Main.scala` in your project to `BigLog.scala`.
+4. Replace the content of your project's `BigLog.scala` with the one in this branch.
+5. Build the project. This should take a few seconds as SBT downloads the `spark-sql` and `spark-sql-kafka` dependencies.
+6. If the build completes without any errors, run the project. After a few Spark initialization messages, you should start seeing the streamed DataFrames.
+7. The run should terminate with an exit code of 0 after about 20 seconds. `Thread.sleep(20000)` controls this behaviour and stops the query after 20 seconds.
+8. If you would like to see a continuous stream, use `.awaitTermination()` after `.start()`.
+
+## Useful Links
+
+- [Structured Streaming + Kafka Integration Guide](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html)
+- [Getting Started With Scala](https://docs.scala-lang.org/getting-started/index.html)
