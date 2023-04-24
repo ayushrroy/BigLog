@@ -1,8 +1,7 @@
-''' kafka producer for Spark_2k.log https://github.com/logpai/loghub
-    
-    Author: Sydney May 
+""" kafka producer for Spark_2k.log https://github.com/logpai/loghub
+    Author: Sydney May
     Version: v1 (4/23/2023)
-'''
+"""
 
 from time import sleep
 from json import dumps
@@ -10,6 +9,7 @@ from kafka import KafkaProducer
 
 # primary key to be used in data parsing by consumer
 global line_id
+
 
 # parse log file into dictionary based on csv format: https://github.com/logpai/logparser/blob/master/logs/Spark/Spark_2k.log_structured.csv
 def to_dict(line):
@@ -20,24 +20,26 @@ def to_dict(line):
     content = ""
 
     for i in range(4, len(line_arr)):
-        content += (line_arr[i] + " ")
+        content += line_arr[i] + " "
 
     line_dict["LineId"] = str(line_id)
-    line_dict['Date'] = line_arr[0]
-    line_dict['Time'] = line_arr[1]
-    line_dict['Level'] = line_arr[2]
-    line_dict['Component'] = line_arr[3][:len(line_arr[3])- 1]
-    line_dict['Content'] = content
+    line_dict["Date"] = line_arr[0]
+    line_dict["Time"] = line_arr[1]
+    line_dict["Level"] = line_arr[2]
+    line_dict["Component"] = line_arr[3][: len(line_arr[3]) - 1]
+    line_dict["Content"] = content
 
     return line_dict
+
 
 def stream_file_lines(filename, kafka_producer):
     global line_id
     f = open(filename)
     for line in f:
         # renamed the topic from Assignment 4, hopefully this doesn't cause any issues
-        kafka_producer.send('log_topic', key=str(line_id), value=to_dict(line))
-        print(f"Sent {line} to log_topic")
+        kafka_producer.send("log_topic", key=str(line_id), value=to_dict(line))
+        # print(f"Sent {line} to log_topic")
+        print(f"Sent log entry to log_topic: {to_dict(line)}")
 
         # increment line id
         line_id += 1
@@ -45,11 +47,12 @@ def stream_file_lines(filename, kafka_producer):
         # This adjusts the rate at which the data is sent. Use a slower rate for testing your code.
         sleep(1)
 
+
 # We have already setup a producer for you
 producer = KafkaProducer(
-    bootstrap_servers=['localhost:9092'],
-    value_serializer=lambda x: dumps(x).encode('utf-8'),
-    key_serializer=lambda x: x.encode('utf-8')
+    bootstrap_servers=["localhost:9092"],
+    value_serializer=lambda x: dumps(x).encode("utf-8"),
+    key_serializer=lambda x: x.encode("utf-8"),
 )
 
 # Top level call to stream the data to kafka topic. Provide the path to the data. Use a smaller data file for testing.
