@@ -1,6 +1,6 @@
 # BigLog
 
-The sections that follow set up the dev environment for the project. These are for Mac but should roughly be the same for Windows (`WSL2`) and Linux.
+Framework/Tool that monitors server logs and identifies anomalous behavior. The sections that follow set up the dev environment for the project. These are for Mac but should roughly be the same for Windows (`WSL2`) and Linux.
 
 Table of Contents
 =================
@@ -168,3 +168,12 @@ only showing top 20 rows
 
 - [Structured Streaming + Kafka Integration Guide](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html)
 - [Getting Started With Scala](https://docs.scala-lang.org/getting-started/index.html)
+
+### Authors
+
+Sarthak Banerjee, Ajinkya Fotedar, James Hinton, Vinayak Kumar, Sydney May, Ayush Roy
+
+### Versions
+
+v0 (4/11/23)
+v1 (4/26/23)
