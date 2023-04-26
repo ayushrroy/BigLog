@@ -2,6 +2,22 @@
 
 The sections that follow set up the dev environment for the project. These are for Mac but should roughly be the same for Windows (`WSL2`) and Linux.
 
+Table of Contents
+=================
+
+* [Installing Java](#installing-java)
+* [Installing Scala](#installing-scala)
+* [Installing Spark](#installing-spark)
+* [Installing Kafka](#installing-kafka)
+* [Start Zookeeper](#start-zookeeper)
+* [Start Kafka](#start-kafka)
+* [Create a Kafka topic](#create-a-kafka-topic)
+* [Start the Producer](#start-the-producer)
+* [Verifying logs on the Consumer](#verifying-logs-on-the-consumer)
+* [Creating an SBT project in IntelliJ](#creating-an-sbt-project-in-intellij)
+* [Example Stream](#example-stream)
+* [Useful Links](#useful-links)
+
 ## Requirements
 
 1. Java 11
