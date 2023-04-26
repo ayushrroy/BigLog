@@ -2,8 +2,7 @@
 
 Framework/Tool that monitors server logs and identifies anomalous behavior. The sections that follow set up the dev environment for the project. These are for Mac but should roughly be the same for Windows (`WSL2`) and Linux.
 
-Table of Contents
-=================
+## Table of Contents
 
 * [Installing Java](#installing-java)
 * [Installing Scala](#installing-scala)
@@ -16,7 +15,6 @@ Table of Contents
 * [Verifying logs on the Consumer](#verifying-logs-on-the-consumer)
 * [Creating an SBT project in IntelliJ](#creating-an-sbt-project-in-intellij)
 * [Example Stream](#example-stream)
-* [Useful Links](#useful-links)
 
 ## Requirements
 
@@ -169,11 +167,14 @@ only showing top 20 rows
 - [Structured Streaming + Kafka Integration Guide](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html)
 - [Getting Started With Scala](https://docs.scala-lang.org/getting-started/index.html)
 
+- [Building a Scala Project With IntelliJ And SBT](https://docs.scala-lang.org/getting-started/intellij-track/building-a-scala-project-with-intellij-and-sbt.html)
+
 ### Authors
 
 Sarthak Banerjee, Ajinkya Fotedar, James Hinton, Vinayak Kumar, Sydney May, Ayush Roy
 
 ### Versions
 
-v0 (4/11/23)
-v1 (4/26/23)
+- v0 (4/11/23)
+
+- v1 (4/26/23)
