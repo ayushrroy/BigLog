@@ -1,55 +1,62 @@
+""" kafka producer for Spark_2k.log https://github.com/logpai/loghub
+    Author: Sydney May
+    Version: v1 (4/23/2023)
+"""
+
 from time import sleep
 from json import dumps
 from kafka import KafkaProducer
-import re
-import datetime
+from datetime import datetime
+
+# primary key to be used in data parsing by consumer
+global line_id
 
 
-# Define the regular expression pattern to parse the log lines
-log_pattern = re.compile(
-    r"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}) - - "
-    r"\[([\w:/]+\s[+\-]\d{4})\] "
-    r'"(\w+) (.*?) (HTTP/1\.\d)" (\d{3}) (\d+) '
-    r'"(.*?)" "(.*?)"'
-)
-
-
-# Answer to 1.1
+# parse log file into dictionary based on csv format: https://github.com/logpai/logparser/blob/master/logs/Spark/Spark_2k.log_structured.csv
 def to_dict(line):
-    match = log_pattern.match(line)
-    if match:
-        date_time_str = match.group(2)
-        date_time_obj = datetime.datetime.strptime(
-            date_time_str, "%d/%b/%Y:%H:%M:%S %z"
-        )
-        date_time = date_time_obj.isoformat()
+    global line_id
+    line_dict = {}
 
-        return {
-            "ip_address": match.group(1),
-            "date_time": date_time,
-            "request_type": match.group(3),
-            "request_arg": match.group(4),
-            "status_code": int(match.group(6)),
-            "request_size": int(match.group(7)),
-            "referrer": match.group(8),
-            "user_agent": match.group(9),
-        }
-    return None
+    line_arr = line.split(" ")
+    content = ""
+
+    for i in range(4, len(line_arr)):
+        content += line_arr[i] + " "
+
+    line_dict["LineId"] = str(line_id)
+
+    date_str = line_arr[0]
+    time_str = line_arr[1]
+
+    date_obj = datetime.strptime(date_str, "%y/%m/%d")
+    time_obj = datetime.strptime(time_str, "%H:%M:%S")
+
+    # merging date and time for easier access inside Spark
+    combined_datetime = datetime.combine(date_obj.date(), time_obj.time())
+    combined_datetime_str = combined_datetime.strftime("%Y-%m-%d %H:%M:%S")
+
+    line_dict["Date_Time"] = combined_datetime_str
+    line_dict["Level"] = line_arr[2]
+    line_dict["Component"] = line_arr[3][: len(line_arr[3]) - 1]
+    line_dict["Content"] = content
+
+    return line_dict
 
 
-# Answer to 1.2
 def stream_file_lines(filename, kafka_producer):
-    with open(filename, "r") as file:
-        for line in file:
-            log_dict = to_dict(line)
-            if log_dict is not None:
-                kafka_producer.send(
-                    "test_topic", key=log_dict["ip_address"], value=log_dict
-                )
-                print(f"Sent log entry to test_topic: {log_dict}")
+    global line_id
+    f = open(filename)
+    for line in f:
+        # renamed the topic from Assignment 4, hopefully this doesn't cause any issues
+        kafka_producer.send("log_topic", key=str(line_id), value=to_dict(line))
+        # print(f"Sent {line} to log_topic")
+        print(f"Sent log entry to log_topic: {to_dict(line)}")
 
-                # This adjusts the rate at which the data is sent. Use a slower rate for testing your code.
-                sleep(1)
+        # increment line id
+        line_id += 1
+
+        # This adjusts the rate at which the data is sent. Use a slower rate for testing your code.
+        sleep(1)
 
 
 # We have already setup a producer for you
@@ -60,4 +67,5 @@ producer = KafkaProducer(
 )
 
 # Top level call to stream the data to kafka topic. Provide the path to the data. Use a smaller data file for testing.
-stream_file_lines("./access.log", producer)
+line_id = 1
+stream_file_lines("data/Spark_2k.log", producer)

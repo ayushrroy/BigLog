@@ -1,6 +1,12 @@
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.streaming.Trigger
 
+/**
+ * Scala, Kafka, Spark Streaming test
+ *
+ * @author Ajinkya Fotedar
+ * @version v1
+ */
 object BigLog {
   def main(args: Array[String]): Unit = {
     val KAFKA_BOOTSTRAP_SERVERS = "localhost:9092"
