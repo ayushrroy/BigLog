@@ -1,4 +1,4 @@
-# Project Setup
+# BigLog
 
 The sections that follow set up the dev environment for the project. These are for Mac but should roughly be the same for Windows (`WSL2`) and Linux.
 
@@ -85,7 +85,7 @@ scala>
 ### Create a Kafka topic
 
 ```bash
-❯ kafka-topics --bootstrap-server localhost:9092 --topic test_topic
+❯ kafka-topics --create --bootstrap-server localhost:9092 --topic log_topic
 WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
 Created topic test_topic.
 ```
@@ -101,7 +101,7 @@ Make sure `access.log` is in your `PWD`.
 ### Verifying logs on the Consumer
 
 ```bash
-❯ kafka-console-consumer --from-beginning --bootstrap-server localhost:9092 --topic test_topic
+❯ kafka-console-consumer --from-beginning --bootstrap-server localhost:9092 --topic log_topic
 ```
 
 ### Creating an SBT project in IntelliJ
@@ -114,6 +114,39 @@ Make sure `access.log` is in your `PWD`.
 6. If the build completes without any errors, run the project. After a few Spark initialization messages, you should start seeing the streamed DataFrames.
 7. The run should terminate with an exit code of 0 after about 20 seconds. `Thread.sleep(20000)` controls this behaviour and stops the query after 20 seconds.
 8. If you would like to see a continuous stream, use `.awaitTermination()` after `.start()`.
+
+### Example Stream
+
+```bash
+-------------------------------------------
+Batch: 0
+-------------------------------------------
++------+-------------------+-----+--------------------+--------------------+
+|LineId|          DateTime |Level|           Component|             Content|
++------+-------------------+-----+--------------------+--------------------+
+|     1|2017-06-09 20:10:40| INFO|executor.CoarseGr...|Registered signal...|
+|     2|2017-06-09 20:10:40| INFO|spark.SecurityMan...|Changing view acl...|
+|     3|2017-06-09 20:10:40| INFO|spark.SecurityMan...|Changing modify a...|
+|     4|2017-06-09 20:10:40| INFO|spark.SecurityMan...|SecurityManager: ...|
+|     5|2017-06-09 20:10:41| INFO|spark.SecurityMan...|Changing view acl...|
+|     6|2017-06-09 20:10:41| INFO|spark.SecurityMan...|Changing modify a...|
+|     7|2017-06-09 20:10:41| INFO|spark.SecurityMan...|SecurityManager: ...|
+|     8|2017-06-09 20:10:41| INFO|   slf4j.Slf4jLogger|Slf4jLogger start...|
+|     9|2017-06-09 20:10:41| INFO|            Remoting|Starting remoting\n |
+|    10|2017-06-09 20:10:41| INFO|            Remoting|Remoting started;...|
+|    11|2017-06-09 20:10:41| INFO|          util.Utils|Successfully star...|
+|    12|2017-06-09 20:10:41| INFO|storage.DiskBlock...|Created local dir...|
+|    13|2017-06-09 20:10:41| INFO| storage.MemoryStore|MemoryStore start...|
+|    14|2017-06-09 20:10:42| INFO|executor.CoarseGr...|Connecting to dri...|
+|    15|2017-06-09 20:10:42| INFO|executor.CoarseGr...|Successfully regi...|
+|    16|2017-06-09 20:10:42| INFO|   executor.Executor|Starting executor...|
+|    17|2017-06-09 20:10:42| INFO|          util.Utils|Successfully star...|
+|    18|2017-06-09 20:10:42| INFO|netty.NettyBlockT...|Server created on...|
+|    19|2017-06-09 20:10:42| INFO|storage.BlockMana...|Trying to registe...|
+|    20|2017-06-09 20:10:42| INFO|storage.BlockMana...|Registered BlockM...|
++------+-------------------+-----+--------------------+--------------------+
+only showing top 20 rows
+```
 
 ## Useful Links
 
