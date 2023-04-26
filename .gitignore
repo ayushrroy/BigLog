@@ -1,2 +1,4 @@
-access.log
+/data
 /tmp
+*.log
+*.bak

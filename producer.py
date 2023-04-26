@@ -6,6 +6,7 @@
 from time import sleep
 from json import dumps
 from kafka import KafkaProducer
+from datetime import datetime
 
 # primary key to be used in data parsing by consumer
 global line_id
@@ -23,8 +24,17 @@ def to_dict(line):
         content += line_arr[i] + " "
 
     line_dict["LineId"] = str(line_id)
-    line_dict["Date"] = line_arr[0]
-    line_dict["Time"] = line_arr[1]
+
+    date_str = line_arr[0]
+    time_str = line_arr[1]
+
+    date_obj = datetime.strptime(date_str, "%y/%m/%d")
+    time_obj = datetime.strptime(time_str, "%H:%M:%S")
+
+    combined_datetime = datetime.combine(date_obj.date(), time_obj.time())
+    combined_datetime_str = combined_datetime.strftime("%Y-%m-%d %H:%M:%S")
+
+    line_dict["Date_Time"] = combined_datetime_str
     line_dict["Level"] = line_arr[2]
     line_dict["Component"] = line_arr[3][: len(line_arr[3]) - 1]
     line_dict["Content"] = content
