@@ -94,7 +94,7 @@ object SimpleAnomalyDetection {
       .withColumn("StartTime", $"Timestamps".getItem(0))
       .withColumn("EndTime", $"Timestamps".getItem(1))
       .withColumn("Duration", $"EndTime".cast("double") - $"StartTime".cast("double"))
-      .withColumn("Outlier", $"Duration" > 1)
+      .withColumn("Outlier", $"Duration" =!= 0)
 
     val query = durationAndOutlier
       .writeStream
