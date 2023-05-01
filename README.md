@@ -165,9 +165,7 @@ only showing top 20 rows
 ## Useful Links
 
 - [Structured Streaming + Kafka Integration Guide](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html)
-
 - [Getting Started With Scala](https://docs.scala-lang.org/getting-started/index.html)
-
 - [Building a Scala Project With IntelliJ And SBT](https://docs.scala-lang.org/getting-started/intellij-track/building-a-scala-project-with-intellij-and-sbt.html)
 
 ### Authors
@@ -176,6 +174,6 @@ Sarthak Banerjee, Ajinkya Fotedar, James Hinton, Vinayak Kumar, Sydney May, Ayus
 
 ### Versions
 
-- v0 (4/11/23)
-
-- v1 (4/26/23)
+- v0 (4/11/23), Producer
+- v1 (4/26/23), Pipelines
+- v2 (4/30/23), ML

@@ -64,8 +64,8 @@ def stream_file_lines(filename, kafka_producer):
         log_entry = to_dict(line)
         if log_entry is not None:
             # renamed the topic from Assignment 4, hopefully this doesn't cause any issues
-            kafka_producer.send("log_topic", key=str(line_id), value=log_entry)
-            print(f"Sent log entry to log_topic: {to_dict(line)}")
+            kafka_producer.send("log_ml_topic", key=str(line_id), value=log_entry)
+            print(f"Sent log entry to log_ml_topic: {to_dict(line)}")
 
             # increment line id
             line_id += 1
