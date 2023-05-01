@@ -10,7 +10,7 @@ import org.apache.spark.sql.streaming.Trigger
 object BigLog {
   def main(args: Array[String]): Unit = {
     val KAFKA_BOOTSTRAP_SERVERS = "localhost:9092"
-    val KAFKA_TOPIC = "test_topic"
+    val KAFKA_TOPIC = "log_topic"
 
     val spark = SparkSession.builder
       .appName("scala-kafka-streaming")
@@ -38,7 +38,7 @@ object BigLog {
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
 
-    Thread.sleep(20000)
+    Thread.sleep(10000)
 
     test_query.stop()
   }

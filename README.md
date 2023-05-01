@@ -165,7 +165,7 @@ only showing top 20 rows
 
 ### Example Stream With ML
 
-The Spark cluster application logs for this piece of the project come [from here](https://zenodo.org/record/3227177#.ZE7plS3ML0o). Please extract the `tar` and place it in the `data` dir before running `SimpleAnomalyDetectionML`.
+The Spark cluster application logs for this piece of the project come [from here](https://zenodo.org/record/3227177#.ZE7plS3ML0o). One of the cluster runs is already inside the `data` dir.
 
 ```bash
 -------------------------------------------
