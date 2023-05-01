@@ -7,6 +7,8 @@ from time import sleep
 from json import dumps
 from kafka import KafkaProducer
 from datetime import datetime
+import os
+import glob
 
 # primary key to be used in data parsing by consumer
 global line_id
@@ -25,16 +27,21 @@ def to_dict(line):
 
     line_dict["LineId"] = str(line_id)
 
-    date_str = line_arr[0]
-    time_str = line_arr[1]
+    try:
+        date_str = line_arr[0]
+        time_str = line_arr[1]
+        # Combine date and time strings, then parse them into a datetime object
+        combined_datetime = datetime.strptime(
+            f"{date_str} {time_str}", "%y/%m/%d %H:%M:%S"
+        )
 
-    # Combine date and time strings, then parse them into a datetime object
-    combined_datetime = datetime.strptime(f"{date_str} {time_str}", "%y/%m/%d %H:%M:%S")
+        # Convert the datetime object into an ISO format string
+        combined_datetime_str = combined_datetime.isoformat()
 
-    # Convert the datetime object into an ISO format string
-    combined_datetime_str = combined_datetime.isoformat()
-
-    line_dict["DateTime"] = combined_datetime_str
+        line_dict["DateTime"] = combined_datetime_str
+    except (ValueError, IndexError):
+        print(f"Skipping log entry with incorrect date format: {line}")
+        return None
 
     line_dict["Level"] = line_arr[2]
     line_dict["Component"] = line_arr[3][: len(line_arr[3]) - 1]
@@ -43,20 +50,28 @@ def to_dict(line):
     return line_dict
 
 
+def process_all_log_files(directory, func, kafka_producer):
+    log_files = glob.glob(os.path.join(directory, "*.log"))
+    for log_file in log_files:
+        func(log_file, kafka_producer)
+
+
 def stream_file_lines(filename, kafka_producer):
     global line_id
     f = open(filename)
+    print(f"Processing: {filename}")
     for line in f:
-        # renamed the topic from Assignment 4, hopefully this doesn't cause any issues
-        kafka_producer.send("log_topic", key=str(line_id), value=to_dict(line))
-        # print(f"Sent {line} to log_topic")
-        print(f"Sent log entry to log_topic: {to_dict(line)}")
+        log_entry = to_dict(line)
+        if log_entry is not None:
+            # renamed the topic from Assignment 4, hopefully this doesn't cause any issues
+            kafka_producer.send("log_topic", key=str(line_id), value=log_entry)
+            print(f"Sent log entry to log_topic: {to_dict(line)}")
 
-        # increment line id
-        line_id += 1
+            # increment line id
+            line_id += 1
 
         # This adjusts the rate at which the data is sent. Use a slower rate for testing your code.
-        sleep(1)
+        sleep(0.1)
 
 
 # We have already setup a producer for you
@@ -68,4 +83,5 @@ producer = KafkaProducer(
 
 # Top level call to stream the data to kafka topic. Provide the path to the data. Use a smaller data file for testing.
 line_id = 1
-stream_file_lines("data/Spark_2k.log", producer)
+directory = "data/application_1485248649253_0142"
+process_all_log_files(directory, stream_file_lines, producer)

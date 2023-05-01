@@ -101,7 +101,7 @@ scala>
 ```bash
 ❯ kafka-topics --create --bootstrap-server localhost:9092 --topic log_topic
 WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
-Created topic test_topic.
+Created topic log_topic.
 ```
 
 ### Start the Producer
@@ -165,6 +165,7 @@ only showing top 20 rows
 ## Useful Links
 
 - [Structured Streaming + Kafka Integration Guide](https://spark.apache.org/docs/latest/structured-streaming-kafka-integration.html)
+
 - [Getting Started With Scala](https://docs.scala-lang.org/getting-started/index.html)
 
 - [Building a Scala Project With IntelliJ And SBT](https://docs.scala-lang.org/getting-started/intellij-track/building-a-scala-project-with-intellij-and-sbt.html)

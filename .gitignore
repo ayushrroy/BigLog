@@ -1,3 +1,4 @@
 *.bak
 /tmp
 /archive
+/data/application*
