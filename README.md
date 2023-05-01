@@ -107,7 +107,7 @@ Created topic log_topic.
 
 ### Start the Producer
 
-Make sure `access.log` is in your `PWD`.
+Make sure `Spark_2k.log` is in your `PWD`.
 
 ```bash
 ❯ python3 producer.py
@@ -125,12 +125,14 @@ Make sure `access.log` is in your `PWD`.
 2. Once created, add the `libraryDependencies` from the `build.sbt` file in this branch to your project's `build.sbt`.
 3. Rename `Main.scala` in your project to `BigLog.scala`.
 4. Replace the content of your project's `BigLog.scala` with the one in this branch.
-5. Build the project. This should take a few seconds as SBT downloads the `spark-sql` and `spark-sql-kafka` dependencies.
+5. Build the project. This should take a few seconds as SBT downloads the `spark-sql`, `spark-sql-kafka`, `spark-ml` dependencies.
 6. If the build completes without any errors, run the project. After a few Spark initialization messages, you should start seeing the streamed DataFrames.
 7. The run should terminate with an exit code of 0 after about 20 seconds. `Thread.sleep(20000)` controls this behaviour and stops the query after 20 seconds.
 8. If you would like to see a continuous stream, use `.awaitTermination()` after `.start()`.
 
 ### Example Stream
+
+Testing Spark-Kafka communication with `BigLog`.
 
 ```bash
 -------------------------------------------
@@ -165,7 +167,7 @@ only showing top 20 rows
 
 ### Example Stream With ML
 
-The Spark cluster application run logs for this piece of the project come [from here](https://zenodo.org/record/3227177#.ZE7plS3ML0o). Please extract the `tar` and place it in the `data` run before running the ML pipeline.
+The Spark cluster application logs for this piece of the project come [from here](https://zenodo.org/record/3227177#.ZE7plS3ML0o). Please extract the `tar` and place it in the `data` run before running the ML pipeline.
 
 ```bash
 -------------------------------------------
