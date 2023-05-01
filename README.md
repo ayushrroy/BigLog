@@ -165,7 +165,7 @@ only showing top 20 rows
 
 ### Example Stream With ML
 
-The Spark cluster application run logs for this piece of the project come [from here](https://zenodo.org/record/3227177#.ZE7plS3ML0o). Please extract the `tar` and place it in the `data` run before running the ML pipeline.
+The Spark cluster application run logs for this piece of the project come [from here](https://zenodo.org/record/3227177#.ZE7plS3ML0o). Please extract the `tar` and place it in the `data` dir before running the ML pipeline `SimpleAnomalyDetectionML`.
 
 ```bash
 -------------------------------------------
@@ -195,6 +195,7 @@ Batch: 4
 |{2017-06-09 17:04...| 23.0| 5.0|[2017-06-09 17:04...|2017-06-09 17:04:03|2017-06-09 17:04:03|     0.0|  false|           false|
 |{2017-06-09 17:04...| 12.0|29.0|[2017-06-09 17:04...|2017-06-09 17:04:01|2017-06-09 17:04:01|     0.0|  false|           false|
 +--------------------+-----+----+--------------------+-------------------+-------------------+--------+-------+----------------+
+only showing top 20 rows
 ```
 
 ## Useful Links
@@ -211,4 +212,4 @@ Sarthak Banerjee, Ajinkya Fotedar, James Hinton, Vinayak Kumar, Sydney May, Ayus
 
 - v0 (4/11/23), Producer
 - v1 (4/26/23), Pipelines
-- v2 (4/30/23), ML
+- v2 (4/30/23), ML Integration
