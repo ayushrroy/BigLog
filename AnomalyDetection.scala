@@ -39,13 +39,12 @@ object AnomalyDetection {
       .outputMode("append")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
-
     Thread.sleep(10000)
     test_query.stop()
 
     val logSchema = StructType(Array(
       StructField("LineId", StringType, nullable = false),
-      StructField("Date_Time", StringType, nullable = false),
+      StructField("DateTime", StringType, nullable = false),
       StructField("Level", StringType, nullable = false),
       StructField("Component", StringType, nullable = false),
       StructField("Content", StringType, nullable = false)
@@ -68,7 +67,7 @@ object AnomalyDetection {
     var stageAndTask = logs
       .withColumn("Stage", regexp_extract($"Content", """in stage ([0-9.]+)""", 1))
       .withColumn("Task", regexp_extract($"Content", """task ([0-9.]+)""", 1))
-      .withColumn("Timestamp", $"Date_Time".cast(TimestampType))
+      .withColumn("Timestamp", $"DateTime".cast(TimestampType))
       .filter($"Stage" =!= "" && $"Task" =!= "") // Keep only logs with non-empty Stage and Task IDs
       .select($"Stage", $"Task", $"Timestamp", window($"Timestamp", "10 seconds", "10 seconds").as("Window"))
 

@@ -1,6 +1,5 @@
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.functions._
 import org.apache.spark.sql.functions.col
 import org.apache.spark.ml.classification.DecisionTreeClassifier
 import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator
@@ -9,7 +8,7 @@ import org.apache.spark.ml.feature.VectorAssembler
 /**
  * ML model
  *
- * @authors Vinayak Kumar & Ayush Roy
+ * @author Vinayak Kumar & Ayush Roy
  * @version v1
  */
 object SparkML {

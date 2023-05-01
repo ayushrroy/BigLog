@@ -111,7 +111,7 @@ object SimpleAnomalyDetectionML {
       .format("console")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
-    Thread.sleep(20000)
+    Thread.sleep(10000)
     query.stop()
 
     // Update the outlierRows DataFrame to filter based on PredictedOutlier instead of Outlier
@@ -123,7 +123,7 @@ object SimpleAnomalyDetectionML {
       .format("console")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
-    Thread.sleep(20000)
+    Thread.sleep(10000)
     outlierRowsQuery.stop()
   }
 }

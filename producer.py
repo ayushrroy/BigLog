@@ -56,7 +56,7 @@ def stream_file_lines(filename, kafka_producer):
         line_id += 1
 
         # This adjusts the rate at which the data is sent. Use a slower rate for testing your code.
-        sleep(1)
+        sleep(0.1)
 
 
 # We have already setup a producer for you

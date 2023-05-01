@@ -1,4 +1,4 @@
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.streaming.Trigger
 import org.apache.spark.sql.types.{StringType, StructField, StructType, TimestampType}
@@ -40,13 +40,12 @@ object SimpleAnomalyDetection {
       .outputMode("append")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
-
     Thread.sleep(10000)
     test_query.stop()
 
     val logSchema = StructType(Array(
       StructField("LineId", StringType, nullable = false),
-      StructField("Date_Time", StringType, nullable = false),
+      StructField("DateTime", StringType, nullable = false),
       StructField("Level", StringType, nullable = false),
       StructField("Component", StringType, nullable = false),
       StructField("Content", StringType, nullable = false)
@@ -63,40 +62,39 @@ object SimpleAnomalyDetection {
       .format("console")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
-
     Thread.sleep(10000)
     logQuery.stop()
 
-    val stageAndTask = logs
-      .withColumn("Stage", regexp_extract($"Content", """in stage ([0-9.]+)""", 1))
-      .withColumn("Task", regexp_extract($"Content", """task ([0-9.]+)""", 1))
-      .withColumn("Timestamp", $"Date_Time".cast(TimestampType))
-      .filter($"Stage" =!= "" && $"Task" =!= "") // Keep only logs with non-empty Stage and Task IDs
-      .select($"Stage", $"Task", $"Timestamp", window($"Timestamp", "10 seconds", "10 seconds").as("Window"))
+    val runningAndFinishedLogs = logs
+      .filter($"Content".like("%Running task%") || $"Content".like("%Finished task%"))
 
-    val stageAndTaskInfoQuery = stageAndTask
+    val stageAndTask = runningAndFinishedLogs
+      .withColumn("Stage", regexp_extract($"Content", """in stage (\d+\.\d+)""", 1))
+      .withColumn("Task", regexp_extract($"Content", """task (\d+\.\d+)""", 1))
+      .withColumn("Status", when($"Content".like("%Running task%"), "Running").otherwise("Finished"))
+      .withColumn("Timestamp", $"DateTime".cast(TimestampType))
+      .filter($"Stage" =!= "" && $"Task" =!= "") // Keep only logs with non-empty Stage and Task IDs
+      .select($"Stage", $"Task", $"Status", $"Timestamp")
+
+    val stageAndTaskQuery = stageAndTask
       .writeStream
       .outputMode("append")
       .format("console")
       .option("truncate", "false")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
-
     Thread.sleep(10000)
-    stageAndTaskInfoQuery.stop()
+    stageAndTaskQuery.stop()
 
     val durationAndOutlier = stageAndTask
-      .groupBy("Stage", "Task", "Window")
+      .groupBy(window($"Timestamp", "15 seconds", "15 seconds").as("Window"), $"Stage", $"Task")
       .agg(
         collect_list("Timestamp").as("Timestamps")
       )
       .withColumn("StartTime", $"Timestamps".getItem(0))
       .withColumn("EndTime", $"Timestamps".getItem(1))
-      .withColumn("Duration", $"EndTime".cast("long") - $"StartTime".cast("double"))
+      .withColumn("Duration", $"EndTime".cast("double") - $"StartTime".cast("double"))
       .withColumn("Outlier", $"Duration" > 1)
-      .drop("Timestamps")
-
-    //    val outlierRows = meanAndStdDevByStageAndTask.filter($"Outlier" === true)
 
     val query = durationAndOutlier
       .writeStream
@@ -104,8 +102,18 @@ object SimpleAnomalyDetection {
       .format("console")
       .trigger(Trigger.ProcessingTime("5 seconds"))
       .start()
-
     Thread.sleep(10000)
     query.stop()
+
+    val outlierRows = durationAndOutlier.filter($"Outlier" === true)
+
+    val outlierRowsQuery = outlierRows
+      .writeStream
+      .outputMode("complete")
+      .format("console")
+      .trigger(Trigger.ProcessingTime("5 seconds"))
+      .start()
+    Thread.sleep(10000)
+    outlierRowsQuery.stop()
   }
 }
