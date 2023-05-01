@@ -107,8 +107,6 @@ Created topic log_topic.
 
 ### Start the Producer
 
-Make sure `Spark_2k.log` is in your `PWD`.
-
 ```bash
 ❯ python3 producer.py
 ```
@@ -167,7 +165,7 @@ only showing top 20 rows
 
 ### Example Stream With ML
 
-The Spark cluster application logs for this piece of the project come [from here](https://zenodo.org/record/3227177#.ZE7plS3ML0o). Please extract the `tar` and place it in the `data` run before running the ML pipeline.
+The Spark cluster application logs for this piece of the project come [from here](https://zenodo.org/record/3227177#.ZE7plS3ML0o). Please extract the `tar` and place it in the `data` dir before running `SimpleAnomalyDetectionML`.
 
 ```bash
 -------------------------------------------
