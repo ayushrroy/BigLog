@@ -1,5 +1,0 @@
-17/06/09 17:42:07 INFO executor.CoarseGrainedExecutorBackend: Registered signal handlers for [TERM, HUP, INT]
-17/06/09 17:42:07 INFO spark.SecurityManager: Changing view acls to: yarn,curi
-17/06/09 17:42:07 INFO spark.SecurityManager: Changing modify acls to: yarn,curi
-17/06/09 17:42:07 INFO spark.SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: Set(yarn, curi); users with modify permissions: Set(yarn, curi)
-17/06/09 17:42:14 ERROR executor.CoarseGrainedExecutorBackend: RECEIVED SIGNAL 15: SIGTERM
