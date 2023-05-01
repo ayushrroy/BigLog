@@ -102,7 +102,7 @@ object SimpleAnomalyDetectionML {
       .withColumn("StartTime", $"Timestamps".getItem(0))
       .withColumn("EndTime", $"Timestamps".getItem(1))
       .withColumn("Duration", $"EndTime".cast("double") - $"StartTime".cast("double"))
-      .withColumn("Outlier", $"Duration" > 1)
+      .withColumn("Outlier", $"Duration" =!= 0)
       .withColumn("PredictedOutlier", predictOutlier($"Duration").cast("boolean")) // Apply the model using the UDF
 
     val query = durationAndOutlier
